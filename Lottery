@@ -1,0 +1,31 @@
+import java.util.Arrays;
+
+public class Lottery {
+
+    public static void main(String[] args) {
+        int[] lotteryRandom = new int[7]; //длина массива
+        int[] userChoice = new int[7]; // длина массива
+        for (int i = 0; i < lotteryRandom.length; i++) { //начало отсчета; условие перебора; размер шага
+            lotteryRandom[i] = (int) ((Math.random() * 10)); // наполнение массива (в данном случае - цифры от 0 до 9)
+            userChoice[i] = (int) ((Math.random() * 10));// наполнение массива (в данном случае - цифры от 0 до 9)
+        }
+        sortingArrayMinMax(lotteryRandom);
+        sortingArrayMinMax(userChoice);
+        arrayConsole(userChoice, lotteryRandom);
+    }
+
+    static void sortingArrayMinMax(int[] lotteryRandom) {
+        Arrays.sort(lotteryRandom);
+    }
+
+    public static void arrayConsole(int[] userChoice, int[] lotteryRandom) {
+        int count = 0;
+        for (int i = 0; i < userChoice.length; i++) {
+            boolean match = userChoice[i] == lotteryRandom[i]; // сравнение значений по индексу
+            if (match) {
+                count++;
+            }
+        }
+        System.out.println("count = " + count);
+    }
+}
