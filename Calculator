@@ -1,0 +1,41 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Input first number: ");
+        int a = scanner.nextInt();
+
+        System.out.println("Input second number: ");
+        int b = scanner.nextInt();
+
+        System.out.println("Input math symbol (+, -, *, /): ");
+        String math = scanner.next();
+
+        try {
+            int res = calculate(a, b, math);
+            System.out.println("Result: " + res);
+        } catch (ArithmeticException e) {
+            System.out.println("Divide by zero is forbidden.");
+        }
+    }
+
+    public static int calculate(int a, int b, String math) {
+        switch (math) {
+            case "+":
+                return a + b;
+            case "-":
+                return a - b;
+            case "*":
+                return a * b;
+            case "/":
+                if (b == 0) {
+                    throw new ArithmeticException("Division by zero");
+                }
+                return a / b;
+            default:
+                throw new IllegalArgumentException("Invalid math symbol.");
+        }
+    }
+}
