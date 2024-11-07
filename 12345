@@ -1,0 +1,58 @@
+package org.example;
+
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+public class App {
+
+    public static void main(String[] args) throws IOException, URISyntaxException {
+        FirefoxDriver driver = new FirefoxDriver();
+
+        URI uri = App.class.getClassLoader().getResource("data.txt").toURI();
+        String id = Files.readString(Path.of(uri));
+        driver.get("https://ru.dotabuff.com/players/" + id + "/matches");
+
+        List<WebElement> histories = driver.findElements(By.xpath("//div[@class='content-inner']//tbody//tr"));
+        boolean loshara = checkHistoryIsWon(histories);
+
+        if (loshara) {
+            System.out.println("loshara");
+        } else {
+            System.out.println("not loshara");
+        }
+    }
+
+    public static boolean checkHistoryIsWon(List<WebElement> histories) {
+        for (WebElement historyLine : histories) {
+            WebElement time = historyLine.findElement(By.xpath(".//time"));
+            String datetime = time.getAttribute("datetime");
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(datetime, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
+
+            long secondsDifference = Duration.between(localDateTime, LocalDateTime.now()).toSeconds();
+            if (secondsDifference > 2*60*60/* часы*минуты*секунды */) {
+                break;
+            }
+
+            List<WebElement> won = historyLine.findElements(By.className("won"));
+            if (won.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
